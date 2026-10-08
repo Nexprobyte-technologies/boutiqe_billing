@@ -1,0 +1,6 @@
+{
+  "name": "Velvet & Vine Boutique - Billing & Inventory Management",
+  "description": "Professional boutique billing system and inventory management with live invoice preview, barcode scanning, POS receipt printing, and comprehensive sales administration.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
