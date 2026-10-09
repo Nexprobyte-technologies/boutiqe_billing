@@ -11,10 +11,12 @@ router.get('/', authenticate, (req: AuthenticatedRequest, res: Response) => {
 
   if (search) {
     const q = String(search).trim().toLowerCase();
+    const phoneDigits = q.replace(/\D/g, '');
     customers = customers.filter(
       (c) =>
         c.name.toLowerCase().includes(q) ||
         c.phone.includes(q) ||
+        (phoneDigits.length > 0 && c.phone.replace(/\D/g, '').includes(phoneDigits)) ||
         c.email.toLowerCase().includes(q) ||
         c.id.toLowerCase().includes(q)
     );

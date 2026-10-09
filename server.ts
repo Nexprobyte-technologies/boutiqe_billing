@@ -11,6 +11,7 @@ import returnRoutes from './src/server/routes/returnRoutes.js';
 import reportRoutes from './src/server/routes/reportRoutes.js';
 import settingsRoutes from './src/server/routes/settingsRoutes.js';
 import auditRoutes from './src/server/routes/auditRoutes.js';
+import { db } from './src/server/db.js';
 
 dotenv.config();
 
@@ -20,6 +21,24 @@ const HOST = process.env.HOST || '127.0.0.1';
 
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
+
+// Finish queued PostgreSQL writes before returning API responses.
+app.use('/api', (req, res, next) => {
+  const sendJson = res.json.bind(res);
+  res.json = ((body: unknown) => {
+    void db.flush()
+      .then(() => sendJson(body))
+      .catch((error) => {
+        console.error('PostgreSQL write failed before API response:', error);
+        if (!res.headersSent) {
+          res.status(500);
+          sendJson({ success: false, message: 'Failed to save changes to PostgreSQL.' });
+        }
+      });
+    return res;
+  }) as typeof res.json;
+  next();
+});
 
 // Request logging for API calls
 app.use((req, res, next) => {
@@ -47,6 +66,8 @@ app.get('/api/health', (req, res) => {
 });
 
 async function startServer() {
+  await db.initialize();
+
   if (process.env.NODE_ENV === 'production') {
     app.use(express.static(path.resolve(process.cwd(), 'dist')));
     app.get('*', (req, res) => {
@@ -74,6 +95,14 @@ async function startServer() {
     console.error('Failed to start server:', error);
     process.exit(1);
   });
+
+  const shutdown = () => {
+    server.close(() => {
+      void db.close().finally(() => process.exit(0));
+    });
+  };
+  process.once('SIGINT', shutdown);
+  process.once('SIGTERM', shutdown);
 }
 
 startServer().catch((err) => {

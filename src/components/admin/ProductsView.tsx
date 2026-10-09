@@ -16,6 +16,9 @@ import {
 import { Product, Supplier } from '../../types';
 import { api } from '../../services/api';
 import { useSettings } from '../../context/SettingsContext';
+import { Pagination } from './Pagination';
+
+const PAGE_SIZE = 10;
 
 function createEan13Barcode() {
   const body = `890${Math.floor(100000000 + Math.random() * 900000000)}`;
@@ -30,6 +33,7 @@ export const ProductsView: React.FC = () => {
   const [search, setSearch] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('');
   const [stockFilter, setStockFilter] = useState('');
+  const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -66,6 +70,12 @@ export const ProductsView: React.FC = () => {
   useEffect(() => {
     loadProducts();
   }, [search, categoryFilter, stockFilter]);
+
+  useEffect(() => { setPage(1); }, [search, categoryFilter, stockFilter]);
+
+  const totalPages = Math.max(1, Math.ceil(products.length / PAGE_SIZE));
+  const currentPage = Math.min(page, totalPages);
+  const pageProducts = products.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
 
   useEffect(() => {
     loadSuppliers();
@@ -302,7 +312,7 @@ export const ProductsView: React.FC = () => {
                   <td colSpan={7} className="py-12 text-center text-stone-400">No products match your criteria.</td>
                 </tr>
               ) : (
-                products.map((p) => (
+                pageProducts.map((p) => (
                   <tr key={p.id} className="hover:bg-stone-50/60">
                     <td className="py-3 px-4">
                       <div className="flex items-center gap-3">
@@ -373,6 +383,7 @@ export const ProductsView: React.FC = () => {
             </tbody>
           </table>
         </div>
+        <Pagination page={currentPage} pageSize={PAGE_SIZE} totalItems={products.length} onPageChange={setPage} />
       </div>
 
       {/* Add / Edit Product Modal */}

@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import bcrypt from 'bcryptjs';
+import { Pool } from 'pg';
 
 export interface User {
   id: string;
@@ -246,9 +247,75 @@ const DB_FILE_PATH = path.resolve(process.cwd(), 'data', 'boutique_db.json');
 
 class Database {
   private data: DatabaseSchema;
+  private pool: Pool | null = null;
+  private persistenceQueue: Promise<void> = Promise.resolve();
+  private persistenceError: unknown = null;
 
   constructor() {
     this.data = this.loadOrInitialize();
+  }
+
+  public async initialize(): Promise<void> {
+    const connectionString = process.env.DATABASE_URL;
+    if (!connectionString) {
+      console.log('DATABASE_URL is not configured; using local data/boutique_db.json storage.');
+      return;
+    }
+
+    const pool = new Pool({
+      connectionString,
+      ssl: process.env.DATABASE_SSL === 'true' ? { rejectUnauthorized: false } : undefined,
+      connectionTimeoutMillis: 10_000,
+    });
+
+    try {
+      await pool.query('SELECT 1');
+      await pool.query(`
+        CREATE TABLE IF NOT EXISTS boutique_app_state (
+          id SMALLINT PRIMARY KEY CHECK (id = 1),
+          state JSONB NOT NULL,
+          updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+        )
+      `);
+
+      const result = await pool.query<{ state: DatabaseSchema }>(
+        'SELECT state FROM boutique_app_state WHERE id = 1'
+      );
+      if (result.rows.length > 0) {
+        this.data = result.rows[0].state;
+      } else {
+        // First startup imports the existing JSON data into PostgreSQL.
+        await pool.query(
+          'INSERT INTO boutique_app_state (id, state) VALUES (1, $1::jsonb) ON CONFLICT (id) DO NOTHING',
+          [JSON.stringify(this.data)]
+        );
+        const migrated = await pool.query<{ state: DatabaseSchema }>(
+          'SELECT state FROM boutique_app_state WHERE id = 1'
+        );
+        this.data = migrated.rows[0].state;
+      }
+
+      this.pool = pool;
+      console.log('Connected to PostgreSQL and loaded boutique data.');
+    } catch (error) {
+      await pool.end();
+      throw error;
+    }
+  }
+
+  public async close(): Promise<void> {
+    await this.flush();
+    await this.pool?.end();
+    this.pool = null;
+  }
+
+  public async flush(): Promise<void> {
+    await this.persistenceQueue;
+    if (this.persistenceError) {
+      const error = this.persistenceError;
+      this.persistenceError = null;
+      throw error;
+    }
   }
 
   private loadOrInitialize(): DatabaseSchema {
@@ -291,15 +358,29 @@ class Database {
   }
 
   private saveData(data: DatabaseSchema) {
-    try {
-      const dataDir = path.dirname(DB_FILE_PATH);
-      if (!fs.existsSync(dataDir)) {
-        fs.mkdirSync(dataDir, { recursive: true });
+    if (!this.pool) {
+      try {
+        const dataDir = path.dirname(DB_FILE_PATH);
+        if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
+        fs.writeFileSync(DB_FILE_PATH, JSON.stringify(data, null, 2), 'utf-8');
+      } catch (error) {
+        console.error('Failed to save local boutique data:', error);
       }
-      fs.writeFileSync(DB_FILE_PATH, JSON.stringify(data, null, 2), 'utf-8');
-    } catch (err) {
-      console.error('Error persisting database:', err);
+      return;
     }
+
+    const snapshot = JSON.stringify(data);
+    this.persistenceQueue = this.persistenceQueue
+      .then(() => this.pool?.query(
+        `INSERT INTO boutique_app_state (id, state, updated_at)
+         VALUES (1, $1::jsonb, NOW())
+         ON CONFLICT (id) DO UPDATE SET state = EXCLUDED.state, updated_at = NOW()`,
+        [snapshot]
+      ).then(() => undefined))
+      .catch((error) => {
+        this.persistenceError = error;
+        console.error('Failed to save boutique data to PostgreSQL:', error);
+      });
   }
 
   public save() {

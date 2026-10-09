@@ -14,11 +14,15 @@ import {
 } from 'lucide-react';
 import { api } from '../../services/api';
 import { useSettings } from '../../context/SettingsContext';
+import { Pagination } from './Pagination';
+
+const RECENT_INVOICE_PAGE_SIZE = 10;
 
 export const DashboardView: React.FC<{ onNavigateToTab?: (tab: string) => void }> = ({ onNavigateToTab }) => {
   const { formatCurrency } = useSettings();
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [recentInvoicePage, setRecentInvoicePage] = useState(1);
 
   useEffect(() => {
     loadDashboard();
@@ -49,6 +53,9 @@ export const DashboardView: React.FC<{ onNavigateToTab?: (tab: string) => void }
   const { kpis, topSellingProducts, categorySales, paymentMethodDistribution, salesTrend, recentInvoices, lowStockAlerts } = data;
 
   const maxSalesInTrend = Math.max(...salesTrend.map((t: any) => t.amount), 1000);
+  const recentInvoicePages = Math.max(1, Math.ceil(recentInvoices.length / RECENT_INVOICE_PAGE_SIZE));
+  const currentRecentInvoicePage = Math.min(recentInvoicePage, recentInvoicePages);
+  const pageRecentInvoices = recentInvoices.slice((currentRecentInvoicePage - 1) * RECENT_INVOICE_PAGE_SIZE, currentRecentInvoicePage * RECENT_INVOICE_PAGE_SIZE);
 
   return (
     <div className="p-6 lg:p-8 space-y-6">
@@ -293,7 +300,7 @@ export const DashboardView: React.FC<{ onNavigateToTab?: (tab: string) => void }
               </tr>
             </thead>
             <tbody className="divide-y divide-stone-100">
-              {recentInvoices.map((inv: any) => (
+              {pageRecentInvoices.map((inv: any) => (
                 <tr key={inv.id} className="hover:bg-stone-50/60">
                   <td className="py-3 px-4 font-mono font-bold text-stone-900">{inv.invoiceNumber}</td>
                   <td className="py-3 px-4">
@@ -326,6 +333,7 @@ export const DashboardView: React.FC<{ onNavigateToTab?: (tab: string) => void }
             </tbody>
           </table>
         </div>
+        <Pagination page={currentRecentInvoicePage} pageSize={RECENT_INVOICE_PAGE_SIZE} totalItems={recentInvoices.length} onPageChange={setRecentInvoicePage} />
       </div>
     </div>
   );

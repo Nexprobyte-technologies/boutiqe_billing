@@ -5,16 +5,7 @@ import {
   Package,
   Barcode,
   Boxes,
-  Users,
-  Truck,
-  RotateCcw,
-  BarChart3,
-  Settings,
-  ShieldCheck,
-  FileSpreadsheet,
   ArrowLeft,
-  LogOut,
-  UserCheck,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useSettings } from '../../context/SettingsContext';
@@ -24,14 +15,7 @@ export type AdminTab =
   | 'invoices'
   | 'products'
   | 'barcodes'
-  | 'inventory'
-  | 'customers'
-  | 'suppliers'
-  | 'returns'
-  | 'reports'
-  | 'settings'
-  | 'users'
-  | 'audit';
+  | 'inventory';
 
 interface AdminLayoutProps {
   activeTab: AdminTab;
@@ -55,13 +39,6 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
     { id: 'products', label: 'Product Catalog', icon: Package },
     { id: 'barcodes', label: 'Barcode Studio', icon: Barcode },
     { id: 'inventory', label: 'Inventory & Movements', icon: Boxes },
-    { id: 'customers', label: 'Customer Directory', icon: Users },
-    { id: 'suppliers', label: 'Suppliers & Vendors', icon: Truck },
-    { id: 'returns', label: 'Returns & Refunds', icon: RotateCcw },
-    { id: 'reports', label: 'Reports & Analytics', icon: BarChart3 },
-    { id: 'settings', label: 'Store & Tax Settings', icon: Settings },
-    { id: 'users', label: 'Staff & Roles', icon: UserCheck },
-    { id: 'audit', label: 'Audit Trail', icon: ShieldCheck },
   ];
 
   return (

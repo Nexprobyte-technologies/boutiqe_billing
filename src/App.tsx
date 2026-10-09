@@ -13,13 +13,6 @@ import { InvoicesView } from './components/admin/InvoicesView';
 import { ProductsView } from './components/admin/ProductsView';
 import { BarcodeStudioView } from './components/admin/BarcodeStudioView';
 import { InventoryView } from './components/admin/InventoryView';
-import { CustomersView } from './components/admin/CustomersView';
-import { SuppliersView } from './components/admin/SuppliersView';
-import { ReturnsView } from './components/admin/ReturnsView';
-import { ReportsView } from './components/admin/ReportsView';
-import { SettingsView } from './components/admin/SettingsView';
-import { UsersView } from './components/admin/UsersView';
-import { AuditLogsView } from './components/admin/AuditLogsView';
 import { ArrowRight, LockKeyhole, Store } from 'lucide-react';
 
 function LoginPage({ onLogin }: { onLogin: () => void }) {
@@ -121,17 +114,10 @@ function BoutiqueApp() {
   const renderAdminContent = () => {
     switch (adminTab) {
       case 'dashboard': return <DashboardView onNavigateToTab={(tab) => setAdminTab(tab as AdminTab)} />;
-      case 'invoices': return <InvoicesView />;
+      case 'invoices': return <InvoicesView onCreateInvoice={() => navigate('/')} />;
       case 'products': return <ProductsView />;
       case 'barcodes': return <BarcodeStudioView />;
       case 'inventory': return <InventoryView />;
-      case 'customers': return <CustomersView />;
-      case 'suppliers': return <SuppliersView />;
-      case 'returns': return <ReturnsView />;
-      case 'reports': return <ReportsView />;
-      case 'settings': return <SettingsView />;
-      case 'users': return <UsersView />;
-      case 'audit': return <AuditLogsView />;
       default: return <DashboardView />;
     }
   };

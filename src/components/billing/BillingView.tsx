@@ -133,9 +133,32 @@ export const BillingView: React.FC = () => {
     setSelectedCustomer(c);
     setCustomerName(c.name);
     setCustomerPhone(c.phone);
-    setCustomerEmail(c.email || '');
+    setCustomerEmail(c.email || c.city || '');
     setCustomerAddress(c.address || '');
   };
+
+  useEffect(() => {
+    const normalizePhone = (value: string) => value.replace(/\D/g, '').replace(/^91(?=\d{10}$)/, '');
+    const digits = normalizePhone(customerPhone);
+    if (digits.length < 10 || (selectedCustomer && normalizePhone(selectedCustomer.phone) === digits)) return;
+
+    let active = true;
+    const timer = window.setTimeout(async () => {
+      try {
+        const res = await api.getCustomers(digits);
+        if (!active) return;
+        const match = res.customers.find((customer) => normalizePhone(customer.phone) === digits);
+        if (match) handleSelectCustomer(match);
+      } catch (err) {
+        if (active) console.error('Customer phone lookup failed:', err);
+      }
+    }, 250);
+
+    return () => {
+      active = false;
+      window.clearTimeout(timer);
+    };
+  }, [customerPhone, selectedCustomer]);
 
   // Barcode Scan Handler
   const handleBarcodeSubmit = async (barcodeVal: string): Promise<string | null> => {
@@ -635,7 +658,10 @@ export const BillingView: React.FC = () => {
                 <input
                   type="tel"
                   value={customerPhone}
-                  onChange={(e) => setCustomerPhone(e.target.value)}
+                  onChange={(e) => {
+                    setCustomerPhone(e.target.value);
+                    setSelectedCustomer(null);
+                  }}
                   placeholder="e.g. 9876543210"
                   className="w-full px-3 py-2 rounded-xl border border-stone-200 focus:outline-hidden focus:ring-2 focus:ring-amber-500/20 focus:border-amber-600 text-stone-800"
                 />

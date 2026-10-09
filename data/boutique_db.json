@@ -34,8 +34,8 @@
       "id": "USR-TEST",
       "name": "test",
       "email": "test@velvetvine.com",
-      "passwordHash": "$2b$10$ll9me2PXSajOpTl/it6PRetR2bVnRvqxEt8rrewjCs0RqPmGbJJfq",
-      "role": "CASHIER",
+      "passwordHash": "$2b$10$bmmR6dDVYUKXQdBxo9/.Z.HptLlRtctV1k3IGYTRS1e3ax8KBerN2",
+      "role": "SUPER_ADMIN",
       "active": true,
       "createdAt": "2026-10-08T09:59:02.679Z"
     }
@@ -110,14 +110,14 @@
       "mrp": 12499,
       "discount": 0,
       "taxRateId": "TAX-12",
-      "currentStock": 8,
+      "currentStock": 7,
       "minStock": 2,
       "supplierId": "SUP-000001",
       "status": "ACTIVE",
       "variants": [],
       "id": "PROD-000008",
       "createdAt": "2026-10-08T11:28:46.874Z",
-      "updatedAt": "2026-10-08T11:28:46.874Z"
+      "updatedAt": "2026-10-09T08:19:36.609Z"
     },
     {
       "id": "PROD-000001",
@@ -137,13 +137,13 @@
       "mrp": 14999,
       "discount": 0,
       "taxRateId": "TAX-12",
-      "currentStock": 11,
+      "currentStock": 8,
       "minStock": 3,
       "supplierId": "SUP-000001",
       "supplierName": "Kanchipuram Silk Guild",
       "status": "ACTIVE",
       "createdAt": "2026-02-01T00:00:00Z",
-      "updatedAt": "2026-10-08T10:20:05.432Z"
+      "updatedAt": "2026-10-09T08:19:58.075Z"
     },
     {
       "id": "PROD-000002",
@@ -393,6 +393,21 @@
   ],
   "customers": [
     {
+      "name": "Nandhakumar B",
+      "phone": "07448516897",
+      "email": "nandhakumarid023@gmail.com",
+      "address": "",
+      "city": "",
+      "state": "",
+      "postalCode": "",
+      "id": "CUS-000009",
+      "totalPurchases": 51606,
+      "totalBills": 3,
+      "outstandingAmount": 0,
+      "createdAt": "2026-10-09T07:11:36.597Z",
+      "lastPurchaseDate": "2026-10-09T08:19:58.075Z"
+    },
+    {
       "name": "murali nex",
       "phone": "98745632",
       "email": "muralinex192@gmail.com",
@@ -555,6 +570,200 @@
     }
   ],
   "invoices": [
+    {
+      "id": "INV-2026-000009",
+      "invoiceNumber": "INV-2026-000009",
+      "invoiceDate": "2026-10-09",
+      "dueDate": "2026-10-09",
+      "customerId": "CUS-000009",
+      "customerName": "Nandhakumar B",
+      "customerPhone": "07448516897",
+      "customerEmail": "nandhakumarid023@gmail.com",
+      "customerAddress": "",
+      "items": [
+        {
+          "id": "ITM-9QCA18K",
+          "productId": "PROD-000001",
+          "name": "Royal Crimson Kanjivaram Silk Saree",
+          "sku": "SAR-001",
+          "barcode": "8901234567890",
+          "size": "Free Size (6.3m with blouse)",
+          "color": "Deep Crimson",
+          "quantity": 1,
+          "unitPrice": 11999,
+          "discountAmount": 0,
+          "discountType": "percentage",
+          "discountValue": 0,
+          "taxRate": 12,
+          "taxAmount": 1439.88,
+          "total": 13438.88
+        }
+      ],
+      "subtotal": 11999,
+      "itemDiscountTotal": 0,
+      "invoiceDiscountType": "fixed",
+      "invoiceDiscountValue": 0,
+      "invoiceDiscountAmount": 0,
+      "taxableAmount": 11999,
+      "taxAmount": 1439.88,
+      "cgstAmount": 719.94,
+      "sgstAmount": 719.94,
+      "igstAmount": 0,
+      "additionalCharges": 0,
+      "roundOff": 0.12,
+      "grandTotal": 13439,
+      "paymentMethod": "UPI",
+      "payments": [
+        {
+          "method": "UPI",
+          "amount": 13439,
+          "date": "2026-10-09T08:19:58.075Z"
+        }
+      ],
+      "paidAmount": 13439,
+      "balanceAmount": 0,
+      "paymentStatus": "PAID",
+      "status": "COMPLETED",
+      "notes": "",
+      "createdBy": "test",
+      "createdAt": "2026-10-09T08:19:58.075Z",
+      "updatedAt": "2026-10-09T08:19:58.075Z"
+    },
+    {
+      "id": "INV-2026-000008",
+      "invoiceNumber": "INV-2026-000008",
+      "invoiceDate": "2026-10-09",
+      "dueDate": "2026-10-09",
+      "customerId": "CUS-000009",
+      "customerName": "nim",
+      "customerPhone": "07448516897",
+      "customerEmail": "nandhakumarid023@gmail.com",
+      "customerAddress": "",
+      "items": [
+        {
+          "id": "ITM-DW8JGPO",
+          "productId": "PROD-000001",
+          "name": "Royal Crimson Kanjivaram Silk Saree",
+          "sku": "SAR-001",
+          "barcode": "8901234567890",
+          "size": "Free Size (6.3m with blouse)",
+          "color": "Deep Crimson",
+          "quantity": 1,
+          "unitPrice": 11999,
+          "discountAmount": 0,
+          "discountType": "percentage",
+          "discountValue": 0,
+          "taxRate": 12,
+          "taxAmount": 1439.88,
+          "total": 13438.88
+        },
+        {
+          "id": "ITM-I28NFUN",
+          "productId": "PROD-000008",
+          "name": "nn",
+          "sku": "SAR-937",
+          "barcode": "8906238378534",
+          "size": "Free Size",
+          "color": "Maroon",
+          "quantity": 1,
+          "unitPrice": 9999,
+          "discountAmount": 0,
+          "discountType": "percentage",
+          "discountValue": 0,
+          "taxRate": 12,
+          "taxAmount": 1199.88,
+          "total": 11198.88
+        }
+      ],
+      "subtotal": 21998,
+      "itemDiscountTotal": 0,
+      "invoiceDiscountType": "fixed",
+      "invoiceDiscountValue": 9,
+      "invoiceDiscountAmount": 9,
+      "taxableAmount": 21989,
+      "taxAmount": 2639.76,
+      "cgstAmount": 1319.88,
+      "sgstAmount": 1319.88,
+      "igstAmount": 0,
+      "additionalCharges": 99,
+      "roundOff": 0.24,
+      "grandTotal": 24728,
+      "paymentMethod": "Cash",
+      "payments": [
+        {
+          "method": "Cash",
+          "amount": 24728,
+          "date": "2026-10-09T08:19:36.609Z"
+        }
+      ],
+      "paidAmount": 24728,
+      "balanceAmount": 0,
+      "paymentStatus": "PAID",
+      "status": "COMPLETED",
+      "notes": "tyy6",
+      "createdBy": "test",
+      "createdAt": "2026-10-09T08:19:36.609Z",
+      "updatedAt": "2026-10-09T08:19:36.609Z"
+    },
+    {
+      "id": "INV-2026-000007",
+      "invoiceNumber": "INV-2026-000007",
+      "invoiceDate": "2026-10-09",
+      "dueDate": "2026-10-09",
+      "customerId": "CUS-000009",
+      "customerName": "Nandhakumar B",
+      "customerPhone": "07448516897",
+      "customerEmail": "nandhakumarid023@gmail.com",
+      "customerAddress": "",
+      "items": [
+        {
+          "id": "ITM-6XIHREX",
+          "productId": "PROD-000001",
+          "name": "Royal Crimson Kanjivaram Silk Saree",
+          "sku": "SAR-001",
+          "barcode": "8901234567890",
+          "size": "Free Size (6.3m with blouse)",
+          "color": "Deep Crimson",
+          "quantity": 1,
+          "unitPrice": 11999,
+          "discountAmount": 0,
+          "discountType": "percentage",
+          "discountValue": 0,
+          "taxRate": 12,
+          "taxAmount": 1439.88,
+          "total": 13438.88
+        }
+      ],
+      "subtotal": 11999,
+      "itemDiscountTotal": 0,
+      "invoiceDiscountType": "fixed",
+      "invoiceDiscountValue": 0,
+      "invoiceDiscountAmount": 0,
+      "taxableAmount": 11999,
+      "taxAmount": 1439.88,
+      "cgstAmount": 719.94,
+      "sgstAmount": 719.94,
+      "igstAmount": 0,
+      "additionalCharges": 0,
+      "roundOff": 0.12,
+      "grandTotal": 13439,
+      "paymentMethod": "UPI",
+      "payments": [
+        {
+          "method": "UPI",
+          "amount": 13439,
+          "date": "2026-10-09T07:11:36.602Z"
+        }
+      ],
+      "paidAmount": 13439,
+      "balanceAmount": 0,
+      "paymentStatus": "PAID",
+      "status": "COMPLETED",
+      "notes": "",
+      "createdBy": "test",
+      "createdAt": "2026-10-09T07:11:36.602Z",
+      "updatedAt": "2026-10-09T07:11:36.602Z"
+    },
     {
       "id": "INV-2026-000006",
       "invoiceNumber": "INV-2026-000006",
@@ -914,6 +1123,66 @@
   "heldInvoices": [],
   "stockMovements": [
     {
+      "id": "SM-000012",
+      "productId": "PROD-000001",
+      "productName": "Royal Crimson Kanjivaram Silk Saree",
+      "sku": "SAR-001",
+      "barcode": "8901234567890",
+      "quantity": -1,
+      "previousStock": 9,
+      "newStock": 8,
+      "type": "SALE",
+      "referenceInvoiceId": "INV-2026-000009",
+      "user": "test",
+      "date": "2026-10-09T08:19:58.075Z",
+      "notes": "Sold in invoice INV-2026-000009"
+    },
+    {
+      "id": "SM-000011",
+      "productId": "PROD-000008",
+      "productName": "nn",
+      "sku": "SAR-937",
+      "barcode": "8906238378534",
+      "quantity": -1,
+      "previousStock": 8,
+      "newStock": 7,
+      "type": "SALE",
+      "referenceInvoiceId": "INV-2026-000008",
+      "user": "test",
+      "date": "2026-10-09T08:19:36.609Z",
+      "notes": "Sold in invoice INV-2026-000008"
+    },
+    {
+      "id": "SM-000010",
+      "productId": "PROD-000001",
+      "productName": "Royal Crimson Kanjivaram Silk Saree",
+      "sku": "SAR-001",
+      "barcode": "8901234567890",
+      "quantity": -1,
+      "previousStock": 10,
+      "newStock": 9,
+      "type": "SALE",
+      "referenceInvoiceId": "INV-2026-000008",
+      "user": "test",
+      "date": "2026-10-09T08:19:36.609Z",
+      "notes": "Sold in invoice INV-2026-000008"
+    },
+    {
+      "id": "SM-000009",
+      "productId": "PROD-000001",
+      "productName": "Royal Crimson Kanjivaram Silk Saree",
+      "sku": "SAR-001",
+      "barcode": "8901234567890",
+      "quantity": -1,
+      "previousStock": 11,
+      "newStock": 10,
+      "type": "SALE",
+      "referenceInvoiceId": "INV-2026-000007",
+      "user": "test",
+      "date": "2026-10-09T07:11:36.602Z",
+      "notes": "Sold in invoice INV-2026-000007"
+    },
+    {
       "id": "SM-000008",
       "productId": "PROD-000008",
       "productName": "nn",
@@ -1034,6 +1303,56 @@
   ],
   "returns": [],
   "auditLogs": [
+    {
+      "id": "AUD-000019",
+      "timestamp": "2026-10-09T08:19:58.076Z",
+      "user": "test",
+      "action": "INVOICE_CREATED",
+      "entity": "Invoice",
+      "entityId": "INV-2026-000009",
+      "details": "Billed Nandhakumar B for ₹13439 (PAID)",
+      "ipAddress": "127.0.0.1"
+    },
+    {
+      "id": "AUD-000018",
+      "timestamp": "2026-10-09T08:19:36.611Z",
+      "user": "test",
+      "action": "INVOICE_CREATED",
+      "entity": "Invoice",
+      "entityId": "INV-2026-000008",
+      "details": "Billed nim for ₹24728 (PAID)",
+      "ipAddress": "127.0.0.1"
+    },
+    {
+      "id": "AUD-000017",
+      "timestamp": "2026-10-09T07:11:36.604Z",
+      "user": "test",
+      "action": "INVOICE_CREATED",
+      "entity": "Invoice",
+      "entityId": "INV-2026-000007",
+      "details": "Billed Nandhakumar B for ₹13439 (PAID)",
+      "ipAddress": "127.0.0.1"
+    },
+    {
+      "id": "AUD-000016",
+      "timestamp": "2026-10-09T07:11:36.598Z",
+      "user": "test",
+      "action": "CUSTOMER_CREATED",
+      "entity": "Customer",
+      "entityId": "CUS-000009",
+      "details": "Added customer Nandhakumar B (07448516897)",
+      "ipAddress": "127.0.0.1"
+    },
+    {
+      "id": "AUD-000015",
+      "timestamp": "2026-10-09T05:39:08.378Z",
+      "user": "test",
+      "action": "USER_LOGIN",
+      "entity": "User",
+      "entityId": "USR-TEST",
+      "details": "User logged in from 127.0.0.1",
+      "ipAddress": "127.0.0.1"
+    },
     {
       "id": "AUD-000014",
       "timestamp": "2026-10-08T11:28:46.876Z",
@@ -1177,11 +1496,11 @@
   ],
   "counters": {
     "product": 8,
-    "customer": 8,
+    "customer": 9,
     "supplier": 3,
-    "invoice": 6,
+    "invoice": 9,
     "return": 0,
-    "movement": 8,
-    "audit": 14
+    "movement": 12,
+    "audit": 19
   }
 }

@@ -107,7 +107,7 @@ router.get('/dashboard', authenticate, (req: AuthenticatedRequest, res: Response
     categorySales: categorySalesMap,
     paymentMethodDistribution: paymentMethodMap,
     salesTrend: last7Days,
-    recentInvoices: completedInvoices.slice(0, 6),
+    recentInvoices: completedInvoices.slice(0, 20),
     lowStockAlerts: lowStockProducts.slice(0, 5),
   });
 });

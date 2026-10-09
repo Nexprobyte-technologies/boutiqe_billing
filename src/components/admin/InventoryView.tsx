@@ -14,6 +14,9 @@ import {
 import { Product, StockMovement } from '../../types';
 import { api } from '../../services/api';
 import { useSettings } from '../../context/SettingsContext';
+import { Pagination } from './Pagination';
+
+const PAGE_SIZE = 10;
 
 export const InventoryView: React.FC = () => {
   const { formatCurrency } = useSettings();
@@ -23,6 +26,8 @@ export const InventoryView: React.FC = () => {
   const [stats, setStats] = useState<any>(null);
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState('');
+  const [inventoryPage, setInventoryPage] = useState(1);
+  const [movementPage, setMovementPage] = useState(1);
   const [loading, setLoading] = useState(false);
 
   // Stock Adjustment Modal
@@ -36,6 +41,15 @@ export const InventoryView: React.FC = () => {
     loadInventory();
     loadMovements();
   }, [search, filter]);
+
+  useEffect(() => { setInventoryPage(1); }, [search, filter]);
+
+  const inventoryPageCount = Math.max(1, Math.ceil(inventory.length / PAGE_SIZE));
+  const currentInventoryPage = Math.min(inventoryPage, inventoryPageCount);
+  const pageInventory = inventory.slice((currentInventoryPage - 1) * PAGE_SIZE, currentInventoryPage * PAGE_SIZE);
+  const movementPageCount = Math.max(1, Math.ceil(movements.length / PAGE_SIZE));
+  const currentMovementPage = Math.min(movementPage, movementPageCount);
+  const pageMovements = movements.slice((currentMovementPage - 1) * PAGE_SIZE, currentMovementPage * PAGE_SIZE);
 
   const loadInventory = async () => {
     try {
@@ -203,7 +217,7 @@ export const InventoryView: React.FC = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-stone-100">
-                  {inventory.map((p) => {
+                  {pageInventory.map((p) => {
                     const holdingValue = p.currentStock * p.purchasePrice;
                     return (
                       <tr key={p.id} className="hover:bg-stone-50/60">
@@ -251,6 +265,7 @@ export const InventoryView: React.FC = () => {
                 </tbody>
               </table>
             </div>
+            <Pagination page={currentInventoryPage} pageSize={PAGE_SIZE} totalItems={inventory.length} onPageChange={setInventoryPage} />
           </div>
         </div>
       ) : (
@@ -275,7 +290,7 @@ export const InventoryView: React.FC = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-stone-100 font-mono text-[11px]">
-                {movements.map((m) => (
+                {pageMovements.map((m) => (
                   <tr key={m.id} className="hover:bg-stone-50/60 font-sans">
                     <td className="py-3 px-4 text-stone-500 font-mono text-[10px]">
                       {new Date(m.date).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
@@ -321,6 +336,7 @@ export const InventoryView: React.FC = () => {
               </tbody>
             </table>
           </div>
+          <Pagination page={currentMovementPage} pageSize={PAGE_SIZE} totalItems={movements.length} onPageChange={setMovementPage} />
         </div>
       )}
 

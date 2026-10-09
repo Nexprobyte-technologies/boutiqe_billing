@@ -5,29 +5,34 @@ import {
   Printer,
   XCircle,
   Eye,
-  FileText,
   RotateCcw,
   CheckCircle2,
-  Calendar,
   Download,
+  Plus,
+  Trash2,
 } from 'lucide-react';
 import { Invoice } from '../../types';
 import { api } from '../../services/api';
 import { useSettings } from '../../context/SettingsContext';
 import { LiveInvoicePreview } from '../billing/LiveInvoicePreview';
+import { Pagination } from './Pagination';
 
-export const InvoicesView: React.FC = () => {
+const PAGE_SIZE = 10;
+
+export const InvoicesView: React.FC<{ onCreateInvoice?: () => void }> = ({ onCreateInvoice }) => {
   const { formatCurrency, settings } = useSettings();
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [paymentFilter, setPaymentFilter] = useState('');
+  const [page, setPage] = useState(1);
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
   const [cancelModalInvoice, setCancelModalInvoice] = useState<Invoice | null>(null);
   const [cancelReason, setCancelReason] = useState('Customer return / order cancelled');
   const [loading, setLoading] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [actionMessage, setActionMessage] = useState<string | null>(null);
+  const [processingInvoice, setProcessingInvoice] = useState<string | null>(null);
 
   useEffect(() => {
     loadInvoices();
@@ -65,6 +70,11 @@ export const InvoicesView: React.FC = () => {
     const matchesPayment = !paymentFilter || invoice.paymentStatus === paymentFilter;
     return matchesSearch && matchesStatus && matchesPayment;
   });
+  const totalPages = Math.max(1, Math.ceil(visibleInvoices.length / PAGE_SIZE));
+  const currentPage = Math.min(page, totalPages);
+  const pageInvoices = visibleInvoices.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
+
+  useEffect(() => { setPage(1); }, [search, statusFilter, paymentFilter]);
 
   const invoiceCategories = [
     { label: 'All Orders', status: '', count: invoices.length },
@@ -76,17 +86,75 @@ export const InvoicesView: React.FC = () => {
 
   const handleCancelInvoice = async () => {
     if (!cancelModalInvoice) return;
+    setProcessingInvoice(cancelModalInvoice.invoiceNumber);
     try {
       const res = await api.cancelInvoice(cancelModalInvoice.invoiceNumber, cancelReason);
       if (res.success) {
         setActionMessage(`Invoice ${cancelModalInvoice.invoiceNumber} cancelled & items restocked`);
         setCancelModalInvoice(null);
-        loadInvoices();
+        await loadInvoices();
         setTimeout(() => setActionMessage(null), 3500);
       }
     } catch (err: any) {
       alert(err.message || 'Failed to cancel invoice');
+    } finally {
+      setProcessingInvoice(null);
     }
+  };
+
+  const handleDeleteHeldInvoice = async (invoice: Invoice) => {
+    if (!window.confirm(`Delete held order ${invoice.invoiceNumber}? This draft will be permanently removed.`)) return;
+    setProcessingInvoice(invoice.invoiceNumber);
+    try {
+      await api.removeHeldInvoice(invoice.invoiceNumber);
+      setActionMessage(`Held order ${invoice.invoiceNumber} deleted.`);
+      await loadInvoices();
+      setTimeout(() => setActionMessage(null), 3500);
+    } catch (err: any) {
+      alert(err.message || 'Failed to delete held order');
+    } finally {
+      setProcessingInvoice(null);
+    }
+  };
+
+  const downloadExcel = () => {
+    const headers = [
+      'Invoice Number', 'Date', 'Customer', 'Phone', 'Email', 'Order Status', 'Payment Status',
+      'Payment Method', 'Items', 'Subtotal', 'Discount', 'GST', 'Grand Total', 'Staff',
+    ];
+    const escapeCell = (value: unknown) => {
+      let text = String(value ?? '');
+      if (/^[=+@\-\t\r]/.test(text)) text = `'${text}`;
+      return `"${text.replace(/"/g, '""')}"`;
+    };
+    const rows = visibleInvoices.map((invoice) => [
+      invoice.invoiceNumber,
+      invoice.invoiceDate,
+      invoice.customerName,
+      invoice.customerPhone,
+      invoice.customerEmail || '',
+      invoice.status,
+      invoice.paymentStatus,
+      invoice.paymentMethod,
+      invoice.items.map((item) => `${item.name} (${item.sku}) x${item.quantity}`).join('; '),
+      invoice.subtotal,
+      invoice.itemDiscountTotal,
+      invoice.taxAmount,
+      invoice.grandTotal,
+      invoice.createdBy,
+    ]);
+    const csv = `\uFEFF${[headers, ...rows].map((row) => row.map(escapeCell).join(',')).join('\r\n')}`;
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `invoice_orders_${new Date().toISOString().slice(0, 10)}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+    setActionMessage(`Downloaded ${visibleInvoices.length} invoice${visibleInvoices.length === 1 ? '' : 's'} as an Excel-compatible CSV.`);
+    setTimeout(() => setActionMessage(null), 3500);
   };
 
   const printInvoice = (inv: Invoice) => {
@@ -104,9 +172,15 @@ export const InvoicesView: React.FC = () => {
           <h1 className="font-serif text-2xl font-bold text-stone-900 tracking-wide">Invoices &amp; Orders</h1>
           <p className="text-xs text-stone-500">{invoices.length} order{invoices.length === 1 ? '' : 's'} across all invoice categories</p>
         </div>
-        <button type="button" onClick={loadInvoices} disabled={loading} className="inline-flex items-center gap-2 rounded-xl border border-stone-200 bg-white px-3.5 py-2.5 text-xs font-semibold text-stone-700 shadow-sm transition hover:bg-stone-50 disabled:opacity-50">
-          <RotateCcw className={`h-3.5 w-3.5 ${loading ? 'animate-spin' : ''}`} /> Refresh invoices
-        </button>
+        <div className="flex flex-wrap gap-2">
+          <button type="button" onClick={downloadExcel} disabled={visibleInvoices.length === 0} className="inline-flex items-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-3.5 py-2.5 text-xs font-semibold text-emerald-800 shadow-sm transition hover:bg-emerald-100 disabled:opacity-50">
+            <Download className="h-3.5 w-3.5" /> Download Excel (CSV)
+          </button>
+          <button type="button" onClick={loadInvoices} disabled={loading} className="inline-flex items-center gap-2 rounded-xl border border-stone-200 bg-white px-3.5 py-2.5 text-xs font-semibold text-stone-700 shadow-sm transition hover:bg-stone-50 disabled:opacity-50">
+            <RotateCcw className={`h-3.5 w-3.5 ${loading ? 'animate-spin' : ''}`} /> Refresh
+          </button>
+          {onCreateInvoice && <button type="button" onClick={onCreateInvoice} className="inline-flex items-center gap-2 rounded-xl bg-stone-900 px-3.5 py-2.5 text-xs font-semibold text-white shadow-sm transition hover:bg-stone-800"><Plus className="h-3.5 w-3.5" /> Create invoice</button>}
+        </div>
       </div>
 
       {loadError && (
@@ -187,7 +261,7 @@ export const InvoicesView: React.FC = () => {
                   <td colSpan={8} className="py-12 text-center text-stone-400">No invoices found matching criteria.</td>
                 </tr>
               ) : (
-                visibleInvoices.map((inv) => (
+                pageInvoices.map((inv) => (
                   <tr key={inv.id || inv.invoiceNumber} className="hover:bg-stone-50/60">
                     <td className="py-3.5 px-4 font-mono font-bold text-stone-900">{inv.invoiceNumber}</td>
                     <td className="py-3.5 px-4">
@@ -251,6 +325,17 @@ export const InvoicesView: React.FC = () => {
                             <XCircle className="w-3.5 h-3.5" />
                           </button>
                         )}
+                        {inv.status === 'HOLD' && (
+                          <button
+                            type="button"
+                            onClick={() => void handleDeleteHeldInvoice(inv)}
+                            disabled={processingInvoice === inv.invoiceNumber}
+                            className="p-1.5 rounded-lg text-stone-400 hover:text-red-600 hover:bg-red-50 disabled:opacity-40"
+                            title="Delete held draft"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        )}
                       </div>
                     </td>
                   </tr>
@@ -259,6 +344,7 @@ export const InvoicesView: React.FC = () => {
             </tbody>
           </table>
         </div>
+        <Pagination page={currentPage} pageSize={PAGE_SIZE} totalItems={visibleInvoices.length} onPageChange={setPage} />
       </div>
 
       {/* Invoice Details Modal */}
@@ -391,9 +477,10 @@ export const InvoicesView: React.FC = () => {
               <button
                 type="button"
                 onClick={handleCancelInvoice}
+                disabled={processingInvoice === cancelModalInvoice.invoiceNumber}
                 className="flex-1 py-2 rounded-xl bg-red-600 text-white text-xs font-semibold hover:bg-red-700"
               >
-                Confirm &amp; Restock
+                {processingInvoice === cancelModalInvoice.invoiceNumber ? 'Saving…' : 'Confirm & Restock'}
               </button>
             </div>
           </div>
