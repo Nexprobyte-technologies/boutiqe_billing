@@ -94,32 +94,6 @@
   },
   "products": [
     {
-      "sku": "SAR-937",
-      "barcode": "8906238378534",
-      "name": "nn",
-      "category": "Sarees",
-      "subcategory": "Kanjivaram Silk",
-      "brand": "Velvet & Vine",
-      "description": "Handcrafted luxury piece tailored for high-end boutique clients.",
-      "imageUrl": "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=600&q=80",
-      "color": "Maroon",
-      "size": "Free Size",
-      "material": "Pure Mulberry Silk",
-      "purchasePrice": 5000,
-      "sellingPrice": 9999,
-      "mrp": 12499,
-      "discount": 0,
-      "taxRateId": "TAX-12",
-      "currentStock": 7,
-      "minStock": 2,
-      "supplierId": "SUP-000001",
-      "status": "ACTIVE",
-      "variants": [],
-      "id": "PROD-000008",
-      "createdAt": "2026-10-08T11:28:46.874Z",
-      "updatedAt": "2026-10-09T08:19:36.609Z"
-    },
-    {
       "id": "PROD-000001",
       "sku": "SAR-001",
       "barcode": "8901234567890",
@@ -1304,6 +1278,16 @@
   "returns": [],
   "auditLogs": [
     {
+      "id": "AUD-000020",
+      "timestamp": "2026-10-27T05:22:12.750Z",
+      "user": "charmiqebilling",
+      "action": "PRODUCT_DELETED",
+      "entity": "Product",
+      "entityId": "PROD-000008",
+      "details": "Deleted product nn (SAR-937)",
+      "ipAddress": "127.0.0.1"
+    },
+    {
       "id": "AUD-000019",
       "timestamp": "2026-10-09T08:19:58.076Z",
       "user": "test",
@@ -1501,6 +1485,6 @@
     "invoice": 9,
     "return": 0,
     "movement": 12,
-    "audit": 19
+    "audit": 20
   }
 }

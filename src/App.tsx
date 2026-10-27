@@ -39,9 +39,9 @@ function LoginPage({ onLogin }: { onLogin: () => void }) {
   };
 
   return (
-    <main className="min-h-screen bg-stone-100 flex items-center justify-center px-4 py-10">
-      <div className="w-full max-w-5xl min-h-[620px] overflow-hidden rounded-[2rem] bg-white shadow-2xl grid md:grid-cols-[1.05fr_0.95fr]">
-        <section className="hidden md:flex flex-col justify-between bg-stone-900 p-12 text-white relative overflow-hidden">
+    <main className="min-h-screen bg-[#f1e9e9] flex items-center justify-center px-4 py-10">
+      <div className="w-full max-w-5xl min-h-[620px] overflow-hidden rounded-[2rem] bg-white shadow-2xl shadow-[#51253a]/10 grid md:grid-cols-[1.05fr_0.95fr]">
+        <section className="hidden md:flex flex-col justify-between bg-[#321322] p-12 text-white relative overflow-hidden">
           <div className="absolute -right-24 -bottom-28 h-96 w-96 rounded-full border border-amber-500/20" />
           <div className="absolute -right-8 -bottom-12 h-64 w-64 rounded-full border border-amber-500/20" />
           <div className="relative flex items-center gap-3">
@@ -81,7 +81,7 @@ function LoginPage({ onLogin }: { onLogin: () => void }) {
             </div>
 
             {error && <p role="alert" className="mt-4 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>}
-            <button type="submit" disabled={submitting} className="mt-7 flex w-full items-center justify-center gap-2 rounded-xl bg-stone-900 px-4 py-3.5 text-sm font-semibold text-white transition hover:bg-stone-800 disabled:cursor-wait disabled:opacity-60">
+            <button type="submit" disabled={submitting} className="mt-7 flex w-full items-center justify-center gap-2 rounded-xl bg-[#51253a] px-4 py-3.5 text-sm font-semibold text-white shadow-lg shadow-[#51253a]/15 transition hover:bg-[#321322] disabled:cursor-wait disabled:opacity-60">
               <LockKeyhole className="h-4 w-4" /> {submitting ? 'Signing in…' : 'Sign in'} <ArrowRight className="h-4 w-4" />
             </button>
           </form>
@@ -127,7 +127,7 @@ function BoutiqueApp() {
 
   if (pathname === '/admin') {
     return (
-      <div className="min-h-screen bg-stone-50 font-sans">
+      <div className="min-h-screen bg-[#f8f5f3] font-sans">
         <AdminLayout activeTab={adminTab} onTabChange={setAdminTab} onBackToBilling={() => navigate('/')}>
           {renderAdminContent()}
         </AdminLayout>
@@ -136,9 +136,9 @@ function BoutiqueApp() {
   }
 
   return (
-    <div className="min-h-screen bg-stone-50 font-sans">
+    <div className="min-h-screen bg-[#f8f5f3] font-sans">
       <BillingView />
-      <button type="button" onClick={() => navigate('/admin')} className="fixed bottom-4 right-4 z-40 rounded-full border border-stone-700 bg-stone-900/95 px-4 py-3 text-xs font-semibold text-white shadow-xl transition hover:bg-stone-800">
+      <button type="button" onClick={() => navigate('/admin')} className="fixed bottom-4 right-4 z-40 rounded-full border border-[#602943] bg-[#321322]/95 px-4 py-3 text-xs font-semibold text-white shadow-xl shadow-[#321322]/20 transition hover:bg-[#51253a]">
         Open Admin Dashboard
       </button>
     </div>

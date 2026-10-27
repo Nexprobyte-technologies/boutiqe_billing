@@ -42,9 +42,9 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
   ];
 
   return (
-    <div className="flex h-screen bg-stone-100 overflow-hidden text-stone-900">
+    <div className="flex h-screen bg-[#f1e9e9] overflow-hidden text-stone-900">
       {/* Sidebar */}
-      <aside className="w-64 bg-stone-900 text-stone-300 flex flex-col shrink-0 border-r border-stone-800">
+      <aside className="w-64 bg-[#321322] text-stone-300 flex flex-col shrink-0 border-r border-[#51253a]">
         {/* Boutique Branding */}
         <div className="h-16 px-6 border-b border-stone-800 flex items-center justify-between">
           <div>
@@ -109,7 +109,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
       </aside>
 
       {/* Main Content Viewport */}
-      <main className="flex-1 flex flex-col h-screen overflow-y-auto bg-stone-50">
+      <main className="flex-1 flex flex-col h-screen overflow-y-auto bg-[#f8f5f3]">
         {children}
       </main>
     </div>

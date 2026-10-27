@@ -558,15 +558,15 @@ export const BillingView: React.FC = () => {
     : [];
 
   return (
-    <div className="flex-1 flex flex-col h-screen overflow-hidden bg-stone-50">
+    <div className="flex-1 flex flex-col h-screen overflow-hidden bg-[#f8f5f3]">
       {/* Top POS Header */}
-      <header className="h-14 border-b border-stone-200/90 bg-white px-4 lg:px-6 flex items-center justify-between shrink-0 shadow-2xs z-20">
+      <header className="h-16 border-b border-[#eadfe2] bg-white/95 px-4 lg:px-7 flex items-center justify-between shrink-0 shadow-sm z-20 backdrop-blur">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-xl bg-amber-900 text-amber-50 flex items-center justify-center font-serif font-black text-sm tracking-wider shadow-xs">
+          <div className="w-10 h-10 rounded-2xl bg-[#51253a] text-white flex items-center justify-center font-serif font-black text-base tracking-wider shadow-md shadow-[#51253a]/20">
             V
           </div>
           <div>
-            <h1 className="font-serif font-bold text-stone-900 text-sm tracking-widest uppercase">
+            <h1 className="font-serif font-bold text-[#321322] text-sm tracking-[0.14em] uppercase">
               {settings.boutiqueName}
             </h1>
             <p className="text-[10px] text-stone-400 -mt-0.5 tracking-wider uppercase">Boutique POS &amp; Billing</p>
@@ -626,7 +626,15 @@ export const BillingView: React.FC = () => {
       {/* Main Two-Panel Layout */}
       <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 overflow-hidden">
         {/* ==================== LEFT PANEL: BILLING CREATION FORM ==================== */}
-        <div className="lg:col-span-7 flex flex-col h-full overflow-y-auto p-4 lg:p-6 space-y-4">
+        <div className="lg:col-span-7 flex flex-col h-full overflow-y-auto p-4 lg:p-7 space-y-4">
+          <div className="flex items-end justify-between px-1 pb-1">
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-amber-700">Point of sale</p>
+              <h2 className="mt-1 font-serif text-2xl font-semibold text-[#321322]">Create an invoice</h2>
+              <p className="mt-1 text-xs text-stone-500">Add a customer and the pieces they love.</p>
+            </div>
+            <span className="mb-1 rounded-full border border-[#eadfe2] bg-white px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-stone-500">New sale</span>
+          </div>
           {/* Card 1: Customer & Invoice Metadata */}
           <div className="bg-white rounded-2xl border border-stone-200/80 p-4 shadow-2xs space-y-3">
             <div className="flex items-center justify-between pb-2 border-b border-stone-100">
@@ -1120,7 +1128,7 @@ export const BillingView: React.FC = () => {
                 type="button"
                 onClick={() => handleSaveInvoice('A4')}
                 disabled={items.length === 0 || loading}
-                className="px-5 py-2.5 rounded-xl bg-stone-900 hover:bg-stone-800 text-white text-xs font-semibold shadow-md flex items-center gap-2 disabled:opacity-40 transition-all hover:scale-[1.01]"
+                className="px-5 py-2.5 rounded-xl bg-[#51253a] hover:bg-[#321322] text-white text-xs font-semibold shadow-md shadow-[#51253a]/15 flex items-center gap-2 disabled:opacity-40 transition-all hover:scale-[1.01]"
               >
                 <CheckCircle2 className="w-4 h-4 text-emerald-400" /> Complete &amp; Print A4
               </button>
